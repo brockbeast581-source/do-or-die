@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy 18th Birthday Aarthi</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0b0b;
+    color: white;
+    overflow: hidden;
+}
+
+/* PAGE SYSTEM */
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1s;
+    padding: 20px;
+}
+
+.page.active {
+    opacity: 1;
+}
+
+/* BUTTONS */
+button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    background: #ff4d6d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* PLAY BUTTON */
+.playButton {
+    background: #ff7aa2;
+    font-size: 18px;
+    padding: 14px 32px;
+    border-radius: 40px;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% {transform: scale(1);}
+    50% {transform: scale(1.08);}
+    100% {transform: scale(1);}
+}
+
+/* SLIDER */
+.slider {
+    position: relative;
+}
+.slider img {
+    width: 340px;
+    border-radius: 15px;
+    transition: opacity 0.8s;
+}
+#caption {
+    margin-top: 15px;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+/* VIDEO */
+video {
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+/* HEARTS */
+.heart {
+    position: fixed;
+    top: -10px;
+    color: #ff4d6d;
+    animation: fall 6s linear infinite;
+}
+@keyframes fall {
+    0% {transform: translateY(-10vh);}
+    100% {transform: translateY(110vh);}
+}
+
+/* TYPEWRITER */
+#typeText {
+    max-width: 700px;
+    line-height: 1.7;
+    font-size: 18px;
+}
+
+/* FLOATING GIFS */
+.sticker {
+    position: fixed;
+    width: 240px;
+    pointer-events: none;
+    animation: float 8s infinite ease-in-out;
+}
+@keyframes float {
+    0% {transform: translateY(0);}
+    50% {transform: translateY(-20px);}
+    100% {transform: translateY(0);}
+}
+
+/* MEMORY STICKERS */
+.memorySticker {
+    position: absolute;
+    width: 80px;
+}
+.leftSticker { left: -90px; top: 30%; }
+.rightSticker { right: -90px; top: 40%; }
+</style>
+</head>
+<body>
+
+<!-- FLOATING GIFS -->
+<img class="sticker" style="left:5%;top:25%" src="https://media.tenor.com/7WkK9i4JbC0AAAAi/cute-bunny.gif">
+<img class="sticker" style="right:6%;top:20%" src="https://media.tenor.com/UGX5L0K6nVQAAAAi/cute-duck.gif">
+<img class="sticker" style="left:8%;bottom:10%" src="https://media.tenor.com/1n8Wnq7y8y0AAAAi/bunny-love.gif">
+<img class="sticker" style="right:8%;bottom:15%" src="https://media.tenor.com/4c6y9G1jH8EAAAAi/duck-dance.gif">
+
+<!-- AUDIO -->
+<audio id="music" loop>
+    <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<!-- INTRO PAGE -->
+<section class="page active">
+    <h1>Hey Aarthi ❤️</h1>
+    <p>I made something special for your birthday</p>
+    <button class="playButton" id="startBtn">▶ Play Music & Start</button>
+</section>
+
+<!-- MEMORIES PAGE -->
+<section class="page">
+    <h1>Our Memories 📸</h1>
+    <div class="slider">
+        <img id="slide" src="photo1.jpg">
+        <img class="memorySticker leftSticker" src="https://media.giphy.com/media/l4FGuhL4U2WyjdkaY/giphy.gif">
+        <img class="memorySticker rightSticker" src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif">
+        <p id="caption">The beginning of our memories ❤️</p>
+    </div>
+    <button onclick="nextSlide()">Next Photo</button>
+    <button onclick="nextPage()">Continue</button>
+</section>
+
+<!-- STORY PAGE -->
+<section class="page">
+    <h1>Our Story</h1>
+    <p id="typeText"></p>
+    <button onclick="nextPage()">Next</button>
+</section>
+
+<!-- THINGS I LOVE PAGE -->
+<section class="page">
+    <h1>Things I Love About You ❤️</h1>
+    <p style="line-height:1.8">
+        I love your flaws... (text continues)  
+    </p>
+    <video width="360" controls>
+        <source src="video.mp4" type="video/mp4">
+    </video>
+    <button onclick="typeWriter(); this.disabled=true;">Next</button>
+</section>
+
+<!-- FINAL PAGE -->
+<section class="page">
+    <h1>Happy 18th Birthday Aarthi 🎂</h1>
+    <p style="max-width:700px;line-height:1.7">
+        Turning 18 means a brand new chapter...
+    </p>
+    <h2>You are truly special ❤️</h2>
+</section>
+
+<!-- CURSOR DUCK -->
+<img id="cursorDuck" src="https://media.tenor.com/UGX5L0K6nVQAAAAi/cute-duck.gif" style="position:fixed;width:80px;pointer-events:none;z-index:999;">
+
+<script>
+// Cursor follow
+const duck = document.getElementById("cursorDuck");
+document.addEventListener("mousemove", e => {
+    duck.style.left = e.clientX + 15 + "px";
+    duck.style.top = e.clientY + 15 + "px";
+});
+
+// PAGES
+let pages = document.querySelectorAll(".page");
+let current = 0;
+const playBtn = document.getElementById("startBtn");
+const music = document.getElementById("music");
+
+// START BUTTON
+playBtn.addEventListener("click", () => {
+    if (music) music.play().catch(() => console.log("User interaction needed"));
+    nextPage();
+});
+
+// NEXT PAGE
+function nextPage() {
+    pages[current].classList.remove("active");
+    current++;
+    if (current < pages.length) pages[current].classList.add("active");
+}
+
+// MEMORY SLIDER
+const photos = ["photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg","photo5.jpg","photo6.jpg","photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg"];
+const captions = [
+    "After four long years... (caption1)",
+    "10 November 2022... (caption2)",
+    "11 November 2022... (caption3)",
+    "(caption4)", "(caption5)", "(caption6)", "(caption7)", "(caption8)", "(caption9)", "(caption10)"
+];
+let photoIndex = 0;
+function nextSlide() {
+    photoIndex++;
+    if(photoIndex >= photos.length) photoIndex = 0;
+    const img = document.getElementById("slide");
+    img.style.opacity = 0;
+    setTimeout(() => {
+        img.src = photos[photoIndex];
+        document.getElementById("caption").innerText = captions[photoIndex];
+        img.style.opacity = 1;
+    }, 400);
+}
+
+// TYPEWRITER
+const story = `Happy 18th Birthday, Aarthi 🎂🎉 ... (your full story)`;
+let i = 0;
+function typeWriter() {
+    if(i < story.length) {
+        document.getElementById("typeText").innerHTML += story.charAt(i);
+        i++;
+        setTimeout(typeWriter, 40);
+    }
+}
+
+// HEARTS
+function createHeart() {
+    let heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 20 + 10 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 400);
+</script>
+</body>
+</html>
